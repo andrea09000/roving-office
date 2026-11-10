@@ -49,6 +49,17 @@ import { worldClock } from './time.js';
 
 const canvas = document.getElementById('scene');
 const loading = document.getElementById('loading');
+const bossLink = document.getElementById('boss-link');
+
+if (bossLink) {
+  fetch('/api/boss')
+    .then(async (response) => {
+      if (!response.ok) throw new Error(`Boss availability returned HTTP ${response.status}`);
+      const { enabled } = await response.json();
+      bossLink.hidden = enabled !== true;
+    })
+    .catch((error) => console.warn('[boss] Could not check availability:', error));
+}
 
 // --- Renderer, camera and controls live for the whole session -------------
 // Only the world (room, props, agents, feed) is rebuilt when you switch project,
