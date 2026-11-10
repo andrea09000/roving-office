@@ -1,4 +1,4 @@
-# Emitting AOP from the five harnesses
+# Emitting AOP from the six harnesses
 
 Companion to [`aop-spec.md`](./aop-spec.md). This is the research: what each harness actually exposes today, which mechanism to use, and what the adapter looks like. Every claim is tagged **[verified locally]**, **[verified from source/docs]** or **[unverified]** — see the appendix for how.
 
@@ -6,28 +6,34 @@ Every source here is a harness on the user's own machine. [§6](#6-a-cloud-agent
 
 ## 0. The headline
 
-Four of the five harnesses (Claude Code, Codex CLI, Rovo CLI, Cursor) converge on the **same primitive**: *named lifecycle events that run a shell command with a JSON payload on stdin*. Two of them (Claude, Codex) have converged on almost the same event **names** as well. That means:
+Five of the six harnesses (Claude Code, Codex CLI, Rovo CLI, Cursor and Copilot CLI) converge on the **same primitive**: *named lifecycle events that run a command with a JSON payload on stdin*. Claude and Codex share nearly the same event **names**; Copilot uses camelCase names. That means:
 
-> One `aop-send` binary + one thin per-harness mapper covers Claude Code, Codex, Rovo and Cursor. OpenClaw is the odd one out: it has a real event bus, so it gets a long-lived bridge instead — which is strictly nicer.
+> One `aop-send` binary + one thin per-harness mapper covers Claude Code, Codex, Rovo, Cursor and Copilot CLI. OpenClaw is the odd one out: it has a real event bus, so it gets a long-lived bridge instead — which is strictly nicer.
 
-That prediction now has three data points, and the last one is the interesting one. **Rovo CLI (§4), Claude Code (§2) and OpenClaw (§5) are all built.** The second hook harness cost one mapper plus one installer, and the shared adapter needed no changes at all to accept it — only the `hook_event_name` fallback it already had, and a `lib/tool-classes.cjs` split out of the first mapper once there were two.
+The prediction has held across the hook adapters: each uses the shared sender with a
+small harness-specific mapper and installer. Copilot CLI needed no transport changes; its
+payloads differ in their camelCase fields, and its tool events do not include a
+tool-call ID.
 
 OpenClaw then tested the other half of the prediction, that an event bus "gets a long-lived bridge instead — which is strictly nicer". It is nicer, and specifically in four ways that all follow from one difference: **a bridge is not dead between events.** It batches (eight parallel tool calls are one request, not eight), it retries in its own process rather than through a spool hand-off, it keeps its per-session state in memory rather than in a JSON file, and — the one that changes what the office can show — **it can heartbeat**. §6 says hooks "cannot heartbeat on their own (they are dead between events)" and that the receiver's TTL is therefore what retires characters; a bridge closes that gap.
 
 What it did *not* need was a new transport. The bridge shares `bin/lib/aop-core.cjs` with the hook adapters — the endpoint, the project derivation, the redaction rules and the POST itself — and that shared file is where a real bug got fixed once instead of twice (§7.2).
 
-Claude Code event names (verified in the installed 2.1.246 binary) vs Codex (verified in `codex-rs/hooks/src/lib.rs`):
+Claude Code event names (verified in the installed 2.1.246 binary), Codex (verified in
+`codex-rs/hooks/src/lib.rs`) and Copilot CLI (from the
+[public hooks reference](https://docs.github.com/en/copilot/reference/hooks-reference)):
 
-| Claude Code | Codex CLI | Rovo CLI | OpenClaw (in-process) |
-| --- | --- | --- | --- |
-| `SessionStart` / `SessionEnd` | `SessionStart` / `SessionEnd` | — (derive from first event / `on_complete`) | `session_start` / `session_end` |
-| `UserPromptSubmit` | `UserPromptSubmit` | — (derive from `on_tool_start`) | `before_agent_run` |
-| `PreToolUse` / `PostToolUse` | `PreToolUse` / `PostToolUse` | `on_tool_start` / `on_tool_end` | `before_tool_call` / `after_tool_call` |
-| `PermissionRequest` | `PermissionRequest` | `on_tool_permission` | **— none** (§5.2) |
-| `Stop` | `Stop` | `on_complete` | `agent_end` |
-| `SubagentStart` / `SubagentStop` | `SubagentStart` / `SubagentStop` | — | `subagent_spawned` / `subagent_ended` |
-| `PreCompact` / `PostCompact` | `PreCompact` / `PostCompact` | — | `before_compaction` / `after_compaction` |
-| `Notification`, `TeammateIdle` | — | `on_error` | — |
+| Claude Code | Codex CLI | Rovo CLI | Copilot CLI | OpenClaw (in-process) |
+| --- | --- | --- | --- | --- |
+| `SessionStart` / `SessionEnd` | `SessionStart` / `SessionEnd` | — (derive from first event / `on_complete`) | `sessionStart` / `sessionEnd` | `session_start` / `session_end` |
+| `UserPromptSubmit` | `UserPromptSubmit` | — (derive from `on_tool_start`) | `userPromptSubmitted` | `before_agent_run` |
+| `PreToolUse` / `PostToolUse` | `PreToolUse` / `PostToolUse` | `on_tool_start` / `on_tool_end` | `preToolUse` / `postToolUse` | `before_tool_call` / `after_tool_call` |
+| `PermissionRequest` | `PermissionRequest` | `on_tool_permission` | `permissionRequest` | **— none** (§5.2) |
+| `Stop` | `Stop` | `on_complete` | `agentStop` | `agent_end` |
+| `SubagentStart` / `SubagentStop` | `SubagentStart` / `SubagentStop` | — | `subagentStart` / `subagentStop` | `subagent_spawned` / `subagent_ended` |
+| `PreCompact` / `PostCompact` | `PreCompact` / `PostCompact` | — | `preCompact` | `before_compaction` / `after_compaction` |
+| `Notification`, `TeammateIdle` | — | — | — | — |
+| `StopFailure` | — | `on_error` | `errorOccurred` | — |
 
 OpenClaw is in that table for the shape, not because it shares the mechanism: its hooks are function calls on an in-process bus, not shell commands with JSON on stdin. The names line up anyway, which is the same convergence the rest of the table shows.
 
@@ -887,10 +893,10 @@ Plus one long-lived **heartbeat/reaper** helper: hooks cannot heartbeat on their
 Adding the second harness then pulled two small shared modules out of the first, and the third harness pulled a larger one. Each was extracted when a second (or third) consumer actually arrived, which is the right moment — earlier would have been speculative, later would have been two copies drifting:
 
 - **`bin/mappers/lib/tool-classes.cjs`** — the fallback patterns, the shell-command reclassification and the `target` extraction. Per-harness tool *tables* stay in their mappers; the reasoning about unknown tools is shared (§2.4).
-- **`bin/mappers/lib/event-shape.cjs`** — the three mechanics under a mapper that turned out not to be per-harness at all, once there were four mappers to compare: the per-session bookkeeping record (`{seq, started, turnOpen, tools, todo}` — every mapper wants the same fields for the same reasons), the rule that an `undefined` field must not overwrite a known one, and the result byte count. Which *field* holds the result is per-harness and stays in the mapper; how big it is, is arithmetic. Three copies of the state record and two each of the other two went in.
+- **`bin/mappers/lib/event-shape.cjs`** — the three mechanics under a mapper that turned out not to be per-harness at all, once there were five mappers to compare: the per-session bookkeeping record (`{seq, started, turnOpen, tools, todo}` — every mapper wants the same fields for the same reasons), the rule that an `undefined` field must not overwrite a known one, and the result byte count. Which *field* holds the result is per-harness and stays in the mapper; how big it is, is arithmetic. Three copies of the state record and two each of the other two went in.
 - **`bin/lib/local-config.cjs`** — `~/.roving-office/settings.json` and `projects.json` scaffolding, the adapter sanity check, and the `--status` lines about both. These files describe the *office*, not a harness: a machine with two harnesses wired up has one redaction setting and one alias table, and whichever installer runs first should be the one that creates them.
-- **`bin/lib/cli-flags.cjs`** — how the five installers read their own arguments: `flag('--dry-run')`, `value('--config')` (the argument *after* the name, because a path is what every harness's own CLI takes there and what tab-completes), and `help`, since all five accept both `--help` and `-h`. Four of the five had written the pair out themselves, in three spellings: `flag` three times, `value` three times with two different answers for an absent flag, and Codex with a `Set` of the whole argument list to ask the same questions with `.has` — while Cursor asked `args.includes('--uninstall')` three separate times in one function. Deliberately *not* merged with `bin/lib/cli-args.js`, which is the same job for the twelve office-generating tools: those take `--seed=7`, typed by hand dozens of times a session, and these take `--config <path>`. Two conventions rather than one reader with a mode, and in any case these five are CommonJS, because a hook adapter starts under whatever Node the harness launches it with.
-- **`bin/lib/aop-core.cjs`** — *the emitter core*, pulled out for OpenClaw (§5). Where the office is (`resolveEndpoint`, `isLoopback`), which office a directory belongs to (`deriveProject`, `canonicalRemote`), how much may be said and how short (`resolveRedaction`, `clamp`, `tidyPath`, `CAPS`), and the POST itself. Everything a *hook* needs that a *bridge* needs identically. Its smallest export earns its place by reach rather than by size: `readJson(file, fallback)` — parse or fall back, because every one of these files reads JSON somebody may have hand-edited — had a private copy in the Claude, Codex and Cursor installers (Cursor's named `read`, and hard-wired to a `{}` fallback), in `local-config.cjs` and in `aop-connect.cjs` — six restatements of one line, in files that were already requiring `aop-core` transitively through `local-config.cjs`. It also owns `MAPPER_HELPERS`, the frozen bag of `{ clamp, tidyPath, firstString, toIso, CAPS }` a mapper is handed: a mapper requires nothing, so what it may assume about its host is a contract, and a contract assembled at each call site can differ per driver — `bin/aop-send.cjs` built one, and the seven test files that drive the mappers built their own, one of them already missing `toIso`. Stated once, a helper a mapper starts using is either there for every driver or for none. Transport deliberately stays out: a short-lived hook spools and hands off, a bridge batches on a timer, and forcing those into one shape would help nobody. What they must not be allowed to disagree about is which room a repo walks into and what a desk label may contain — one is visible to whoever is watching, the other to whoever wrote the prompt.
+- **`bin/lib/cli-flags.cjs`** — how the six installers read their own arguments: `flag('--dry-run')`, `value('--config')` (the argument *after* the name, because a path is what every harness's own CLI takes there and what tab-completes), and `help`, since all six accept both `--help` and `-h`. Five of the six had written the pair out themselves, in three spellings: `flag` three times, `value` three times with two different answers for an absent flag, and Codex with a `Set` of the whole argument list to ask the same questions with `.has` — while Cursor asked `args.includes('--uninstall')` three separate times in one function. Deliberately *not* merged with `bin/lib/cli-args.js`, which is the same job for the twelve office-generating tools: those take `--seed=7`, typed by hand dozens of times a session, and these take `--config <path>`. Two conventions rather than one reader with a mode, and in any case these six are CommonJS, because a hook adapter starts under whatever Node the harness launches it with.
+- **`bin/lib/aop-core.cjs`** — *the emitter core*, pulled out for OpenClaw (§5). Where the office is (`resolveEndpoint`, `isLoopback`), which office a directory belongs to (`deriveProject`, `canonicalRemote`), how much may be said and how short (`resolveRedaction`, `clamp`, `tidyPath`, `CAPS`), and the POST itself. Everything a *hook* needs that a *bridge* needs identically. Its smallest export earns its place by reach rather than by size: `readJson(file, fallback)` — parse or fall back, because every one of these files reads JSON somebody may have hand-edited — had a private copy in the Claude, Codex and Cursor installers (Cursor's named `read`, and hard-wired to a `{}` fallback), in `local-config.cjs` and in `aop-connect.cjs` — six restatements of one line, in files that were already requiring `aop-core` transitively through `local-config.cjs`. It also owns `MAPPER_HELPERS`, the frozen bag of `{ clamp, tidyPath, firstString, toIso, CAPS }` a mapper is handed: a mapper requires nothing, so what it may assume about its host is a contract, and a contract assembled at each call site can differ per driver — `bin/aop-send.cjs` built one, and the mapper test files that drive the mappers built their own, one of them already missing `toIso`. Stated once, a helper a mapper starts using is either there for every driver or for none. Transport deliberately stays out: a short-lived hook spools and hands off, a bridge batches on a timer, and forcing those into one shape would help nobody. What they must not be allowed to disagree about is which room a repo walks into and what a desk label may contain — one is visible to whoever is watching, the other to whoever wrote the prompt.
 
 The extraction paid for itself immediately, which is §7.2.
 
@@ -967,16 +973,21 @@ There was a fifth, in `aop-connect.cjs`, and its comment is the more instructive
 
 ## 8. Suggested build order
 
-1. ~~**Receiver first.**~~ **Built.** `server.cjs` serves, per office, `POST /office/<keycard>/aop/v0/events` (token-gated, NDJSON batches, id de-duplication), `GET /aop/v0/stream` (SSE, `?harness=` filtered), `GET /aop/v0/state` (replay of live sessions) and `GET /aop/v0/health`. `src/data/AopSource.js` is the single reducer for spec §6; `src/data/sources.js` registers the six sources and the picker drives them. Poke it with the `curl` in [Architecture](../architecture.md#receiving-events) before suspecting an adapter.
+1. ~~**Receiver first.**~~ **Built.** `server.cjs` serves, per office, `POST /office/<keycard>/aop/v0/events` (token-gated, NDJSON batches, id de-duplication), `GET /aop/v0/stream` (SSE, `?harness=` filtered), `GET /aop/v0/state` (replay of live sessions) and `GET /aop/v0/health`. `src/data/AopSource.js` is the single reducer for spec §6; `src/data/sources.js` registers the seven live sources and the picker drives them. Poke it with the `curl` in [Architecture](../architecture.md#receiving-events) before suspecting an adapter.
 2. ~~**Claude Code plugin.**~~ **Built.** `bin/mappers/claude-code.cjs` + `.claude-plugin/` + `hooks/hooks.json` + `bin/aop-claude-install.cjs`. Fifteen hooks, L2, at zero token cost. Claude, Codex and OpenClaw can drive real **ghosts** (spec §6.1), so the scene-side ghost work is the next thing that pays off: cloned chairs and a translucent body clone in `props.js` / `Agent.js`, plus per-desk fan slots in `AgentManager`. Read §2.5's three measured behaviours first, particularly that a plugin install is a *copy*.
 3. ~~**Rovo hooks** (L1) — five hook entries and a mapper.~~ **Built, and a fuller L1 than predicted.** `bin/aop-send.cjs` (shared core) + `bin/mappers/rovo-cli.cjs` (mapper)
    + `bin/aop-rovo-install.cjs` (installer). Eight hook entries, not five, so a Rovo session gets an explicit lifecycle rather than implicit spawn. Read §4.1's five constraints before touching it — particularly first-command-only, which is why the installer has to chain.
 4. ~~**Codex `notify`** (degraded L0) while capturing real `hooks` payloads, then the full mapper.~~ **Built as the full hooks plugin.** `bin/mappers/codex-cli.cjs` + `.codex-plugin/` + the shared `hooks/hooks.json` + `bin/aop-codex-install.cjs`.
 5. ~~**Cursor hooks.**~~ **Built.** `bin/mappers/cursor.cjs` + `bin/aop-cursor-install.cjs`, translating Cursor-native events and TodoWrite multi-step plans into AOP.
-6. **Rovo `serve` bridge** (L2) — also the reference implementation for a long-lived bridge.
-7. ~~**OpenClaw plugin**, once the double-count question in §5 is settled.~~ **Built** — and the double-count question is *half* settled, which is a deviation worth naming: the emitter stamps `harness.name` and `ext.wrapped_harness`, but the receiver-side de-duplication does not exist (§5.8). It shipped in that order because the office needs the declarations before it can have anything to de-duplicate. `openclaw-plugin/` + `bin/aop-openclaw-install.cjs`, ten hooks, L2 minus permissions. Read §5.2 first: the plugin route cannot see approvals at all, which is the one thing the Gateway WebSocket would add.
-8. **A cloud source** (§6) — something server-side posting to a *published* office, not a mapper. Whatever it is, do it after the hosted office is something the project relies on, since it cannot be tested against loopback at all.
-9. Keep `MockSource` as the offline demo, and add an AOP recorder/replay so the the screenshots are reproducible.
+6. ~~**Copilot CLI hooks.**~~ **Built.** `bin/mappers/copilot-cli.cjs` + `bin/aop-copilot-install.cjs`, using Copilot's user-level hooks. It has no tool-call ID, so concurrent calls with the same tool name can have approximate durations; its hook payloads are reduced locally before posting.
+7. **Rovo `serve` bridge** (L2) — also the reference implementation for a long-lived bridge.
+8. ~~**OpenClaw plugin**, once the double-count question in §5 is settled.~~ **Built** — and the double-count question is *half* settled, which is a deviation worth naming: the emitter stamps `harness.name` and `ext.wrapped_harness`, but the receiver-side de-duplication does not exist (§5.8). It shipped in that order because the office needs the declarations before it can have anything to de-duplicate. `openclaw-plugin/` + `bin/aop-openclaw-install.cjs`, ten hooks, L2 minus permissions. Read §5.2 first: the plugin route cannot see approvals at all, which is the one thing the Gateway WebSocket would add.
+9. **A cloud source** (§6) — something server-side posting to a *published* office, not a mapper. Whatever it is, do it after the hosted office is something the project relies on, since it cannot be tested against loopback at all.
+10. Keep `MockSource` as the offline demo, and add an AOP recorder/replay so the the screenshots are reproducible.
+
+The Copilot mapping, its sandbox caveat and the official hook payload shapes are in the
+[Copilot CLI adapter notes](../adapters/copilot-cli.md) and the
+[public hooks reference](https://docs.github.com/en/copilot/reference/hooks-reference).
 
 ## Appendix: how this was verified
 

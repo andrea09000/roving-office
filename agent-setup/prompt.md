@@ -108,7 +108,8 @@ if you want to point one shell at an office without touching the machine's defau
 
 Work out which harness you are, and follow only that section. If you are not sure, the
 process name and the environment usually say: `CLAUDE_PLUGIN_ROOT` or `CLAUDECODE` for
-Claude Code, `CODEX_*` for Codex, `CURSOR_*` for Cursor.
+Claude Code, `CODEX_*` for Codex, `CURSOR_*` for Cursor, or `COPILOT_HOME` or the
+`copilot` process for Copilot CLI.
 
 ### Claude Code
 
@@ -147,7 +148,7 @@ step. You drive the emitter yourself:
 The full emitter reference is at
 <https://therovingoffice.com/docs/developer/adapters/muse.html>.
 
-### Codex, Cursor, Rovo CLI, OpenClaw
+### Codex, Cursor, Rovo CLI, Copilot CLI, OpenClaw
 
 These install from a checkout today. Clone it somewhere outside the user's project — the
 user's repository is not the place for it — and run the one command for the harness:
@@ -155,7 +156,7 @@ user's repository is not the place for it — and run the one command for the ha
 ```bash
 git clone --depth 1 https://github.com/atlassian-labs/roving-office.git
 cd roving-office
-npm run connect:codex        # or: connect:cursor / connect:rovo / connect:openclaw
+npm run connect:codex        # or: connect:cursor / connect:rovo / connect:copilot / connect:openclaw
 ```
 
 No `npm install` is needed first. The app has no runtime dependencies, and the connect

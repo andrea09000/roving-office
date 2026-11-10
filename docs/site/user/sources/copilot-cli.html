@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Copilot CLI — The Roving Office</title>
+  <meta name="description" content="Watch your agents work in an isometric office." />
+
+  <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
+  <link rel="icon" type="image/png" href="/assets/icon-192.png" sizes="192x192" />
+  <link rel="preload" href="/docs/assets/Inter-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="/docs/assets/ui-theme.css" />
+  <link rel="stylesheet" href="/docs/assets/docs.css" />
+</head>
+<body>
+  <a class="skip" href="#doc">Skip to content</a>
+
+  <header class="topbar">
+    <a class="brand" href="/">
+      <img src="/assets/logo-64.png" alt="" width="26" height="26" />
+      <span>The Roving Office</span>
+    </a>
+    <nav class="tabs" aria-label="Documentation sets">
+      <a href="/docs/user/index.html" aria-current="page">For everyone</a>
+      <a href="/docs/developer/index.html">For developers</a>
+    </nav>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="sidebar">Contents</button>
+  </header>
+
+  <div class="shell">
+    <nav class="sidebar" id="sidebar" aria-label="user documentation">
+      <h2>Start here</h2>
+      <ul>
+        <li>
+          <a href="/docs/user/index.html">What this is</a>
+        </li>
+        <li>
+          <a href="/docs/user/watching.html">Watching the office</a>
+        </li>
+        <li>
+          <a href="/docs/user/install.html">Install and run it</a>
+        </li>
+      </ul>
+      <h2>Using it</h2>
+      <ul>
+        <li>
+          <a href="/docs/user/keys.html">Keys and panels</a>
+        </li>
+        <li>
+          <a href="/docs/user/offices-and-keycards.html">Offices, keycards and scenes</a>
+        </li>
+        <li>
+          <a href="/docs/user/connect-your-agents.html">Connect your agents</a>
+        </li>
+        <li>
+          <a href="/docs/user/rearranging-furniture.html">Rearranging the furniture</a>
+        </li>
+        <li>
+          <a href="/docs/user/layouts.html">Layouts</a>
+        </li>
+        <li>
+          <a href="/docs/user/sharing-an-office.html">Sharing an office</a>
+        </li>
+      </ul>
+      <h2>What you are looking at</h2>
+      <ul>
+        <li>
+          <a href="/docs/user/concepts.html">Jobs: the one idea</a>
+        </li>
+        <li>
+          <a href="/docs/user/work-and-post.html">Post, parcels and the bin</a>
+        </li>
+        <li>
+          <a href="/docs/user/the-room.html">The room, prop by prop</a>
+        </li>
+        <li>
+          <a href="/docs/user/agent-names.html">Agent names</a>
+        </li>
+        <li>
+          <a href="/docs/user/buildings.html">Buildings and themes</a>
+        </li>
+        <li>
+          <a href="/docs/user/solar-geometry.html">Solar geometry</a>
+        </li>
+        <li>
+          <a href="/docs/user/generated-offices.html">Generated offices</a>
+        </li>
+      </ul>
+      <h2>Connecting a harness</h2>
+      <ul>
+        <li>
+          <a href="/agent-setup/">Let an agent set itself up <span class="ext" aria-label="standalone page">↗</span></a>
+        </li>
+        <li>
+          <a href="/docs/user/sources/test-data.html">Test Data</a>
+        </li>
+        <li>
+          <a href="/docs/user/sources/rovo-cli.html">Rovo CLI</a>
+        </li>
+        <li>
+          <a href="/docs/user/sources/claude-code.html">Claude Code</a>
+        </li>
+        <li>
+          <a href="/docs/user/sources/cursor.html">Cursor</a>
+        </li>
+        <li>
+          <a href="/docs/user/sources/copilot-cli.html" aria-current="page">Copilot CLI</a>
+        </li>
+        <li>
+          <a href="/docs/user/sources/codex.html">Codex</a>
+        </li>
+        <li>
+          <a href="/docs/user/sources/openclaw.html">OpenClaw</a>
+        </li>
+        <li>
+          <a href="/docs/user/sources/muse.html">Muse</a>
+        </li>
+        <li>
+          <a href="/docs/user/sources/openclaw-server.html">OpenClaw on a server</a>
+        </li>
+        <li>
+          <a href="/docs/user/sources/openclaw-identity.html">OpenClaw: names and faces</a>
+        </li>
+      </ul>
+      <h2>Libraries</h2>
+      <ul>
+        <li>
+          <a href="/docs/character-movements.html">Every character movement <span class="ext" aria-label="standalone page">↗</span></a>
+        </li>
+        <li>
+          <a href="/docs/item-movements.html">Every object, turning <span class="ext" aria-label="standalone page">↗</span></a>
+        </li>
+        <li>
+          <a href="/docs/office-seeds.html">Two dozen generated offices <span class="ext" aria-label="standalone page">↗</span></a>
+        </li>
+        <li>
+          <a href="/docs/office-variety.html">Thirty offices, thirty seeds <span class="ext" aria-label="standalone page">↗</span></a>
+        </li>
+      </ul>
+    </nav>
+
+    <main id="doc" class="doc">
+      <h1 id="github-copilot-cli" tabindex="-1">GitHub Copilot CLI</h1>
+<p><em>An observer: it shows Copilot CLI work in the office without changing what the agent does.</em></p>
+<h2 id="install-it" tabindex="-1">Install it</h2>
+<pre><code class="language-bash">npm run connect:copilot
+npm run connect:copilot:status
+npm run disconnect:copilot
+</code></pre>
+<p>The installer adds a personal Copilot hook file alongside your other hooks, backs up
+that file before changing it, and removes only its own entries when disconnected. Start a
+<strong>new Copilot CLI session</strong> after installing; hooks are loaded at session start.</p>
+<p>Point an office at <strong>Copilot CLI</strong> (press <code>D</code>) and give an agent something to do.</p>
+<h2 id="what-you-get" tabindex="-1">What you get</h2>
+<p>Sessions, turns, tool activity, context compaction and supported subagents appear in the
+office. The built-in <code>general-purpose</code> agent does not emit subagent lifecycle hooks, so it
+will not appear as a separate character.</p>
+<p>The adapter is an observer. It emits no hook decision or prompt, and it cannot approve,
+deny, block or rewrite the agent's work.</p>
+<h2 id="privacy" tabindex="-1">Privacy</h2>
+<p>Copilot hooks receive prompts and tool results on your machine. In the default <code>metadata</code>
+mode, the adapter does not send their text: it sends a generic desk label and, for tool
+results, only a byte count. Tool names, classes, bounded targets and durations remain
+visible. Redaction happens before events leave the machine; see
+<a href="../connect-your-agents.html#how-much-of-your-prompt-the-office-is-told">how much of your prompt the office is told</a>.</p>
+<h2 id="if-nothing-shows-up" tabindex="-1">If nothing shows up</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Cause</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Nothing at all</td>
+<td>Start a new Copilot CLI session and check <code>npm run connect:copilot:status</code></td>
+</tr>
+<tr>
+<td>Hooks are installed but silent</td>
+<td>Check that Copilot hooks are enabled and its sandbox allows the adapter to run and reach the local office</td>
+</tr>
+<tr>
+<td>Desk labels read &quot;Working&quot;</td>
+<td>The default redaction; that is it working as designed</td>
+</tr>
+</tbody>
+</table>
+<p>For Copilot's hook configuration and sandbox behavior, see the
+<a href="https://docs.github.com/en/copilot/reference/hooks-reference">official hooks reference</a>.</p>
+<h2 id="read-next" tabindex="-1">Read next</h2>
+<ul>
+<li><a href="../connect-your-agents.html">Connect your agents</a> — redaction, office routing and when agents leave</li>
+<li>The event mapping is in the <a href="../../developer/adapters/copilot-cli.html">developer docs</a></li>
+</ul>
+
+    </main>
+
+    <aside class="aside" aria-label="On this page">
+      <h2>On this page</h2>
+      <nav class="toc"><ul><li><a href="#install-it">Install it</a></li>
+<li><a href="#what-you-get">What you get</a></li>
+<li><a href="#privacy">Privacy</a></li>
+<li><a href="#if-nothing-shows-up">If nothing shows up</a></li>
+<li><a href="#read-next">Read next</a></li></ul></nav>
+    </aside>
+  </div>
+
+  <footer class="footer">
+    <p>
+
+      Written for anyone watching the room. If you want to change how it works,
+      <a href="/docs/developer/index.html">the developer docs</a> are the other door.
+
+    </p>
+    <p class="wink">It's very alpha. It was written mostly on a plane.</p>
+  </footer>
+
+  <script src="/docs/assets/docs.js"></script>
+</body>
+</html>

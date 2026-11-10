@@ -119,6 +119,9 @@
           <a href="/docs/developer/adapters/cursor.html">Cursor</a>
         </li>
         <li>
+          <a href="/docs/developer/adapters/copilot-cli.html">Copilot CLI</a>
+        </li>
+        <li>
           <a href="/docs/developer/adapters/codex.html">Codex</a>
         </li>
         <li>
@@ -181,7 +184,7 @@ scene/* and ui/*          meshes, and the panels that describe them
 <p>These rules hold that chain together.</p>
 <p><strong>Redaction happens at the near end.</strong> The adapter decides what leaves your machine, not the office and not the server, so a decision about privacy is made once, in the process that already has the secret. See <a href="../user/connect-your-agents.html#how-much-of-your-prompt-the-office-is-told">Sources</a>.</p>
 <p><strong>There is exactly one reducer.</strong> <code>server.cjs</code> holds a ring buffer and nothing else — it does not interpret events, and it does not know what a desk is. All translation from AOP into office behaviour is in <code>src/data/aop-reducer.js</code> — extracted from <code>AopSource</code>, which keeps the transport, precisely so the rules can be tested against recorded streams with fake clocks (<code>test/aop-reducer.test.js</code>) — so there is one place to look when the room disagrees with reality.</p>
-<p><strong>Every source is the same shape.</strong> <code>src/data/AgentSource.js</code> is the interface; <code>MockSource</code> and <code>AopSource</code> both implement it, <code>sources.js</code> declares the six sources and how each is built, and nothing downstream can tell them apart. Optional capabilities are feature-detected rather than branched on by name — that is why <strong>T</strong> vanishes when nothing selected can invent a job, without the UI knowing what a mock is.</p>
+<p><strong>Every source is the same shape.</strong> <code>src/data/AgentSource.js</code> is the interface; <code>MockSource</code> and <code>AopSource</code> both implement it, <code>sources.js</code> declares the eight sources and how each is built, and nothing downstream can tell them apart. Optional capabilities are feature-detected rather than branched on by name — that is why <strong>T</strong> vanishes when nothing selected can invent a job, without the UI knowing what a mock is.</p>
 <p><strong>An office is a set of sources, and <code>feeds.js</code> is where that stops mattering.</strong> It starts one feed per selected source, prefixes every id with the feed it came from so two harnesses cannot collide on a session id, and collapses their separate connection states into the one line a pill can hold. Downstream of it there is a single stream of stage directions again, so nothing in the room has to reason about how many harnesses it is looking at — only an agent's own mark and detail panel ever name one.</p>
 <p><strong>The set moves without the room moving.</strong> <code>feeds.sync()</code> takes a new choice of sources and shifts only the difference: feeds still chosen are left running untouched, feeds that went are stopped and dropped, and feeds that arrived are built and started on the spot. Removing a source is not the same as removing its people, so it hands the removed definitions back and <code>AgentManager.showOut()</code> walks those characters out of the building on the ordinary path — desk given back, coat off the stand, lift, door. The office used to answer this by rebuilding the world, which took the building, the furniture and every <em>other</em> feed's agents with it.</p>
 <p><strong>Observation beats the feed where the room can see for itself.</strong> The <a href="../user/the-room.html#the-mid-job-coffee-run">mid-job coffee run</a> is timed by <code>AgentManager</code> counting seated working time, not sent by any harness, so it works for every source including ones that could never report it.</p>
@@ -482,7 +485,7 @@ src/
     feeds.js          # one office, several sources: fan-in, id namespacing,
                       #   one pill's worth of state for the whole set, and
                       #   sync() to change the set without rebuilding the room
-    sources.js        # the six sources, their marks and how each one is built
+    sources.js        # the eight sources, their marks and how each one is built
   projects.js         # authored scenes + themes (floors, palettes, light, outlook)
   office/
     office.js         # the office client: its scenes and sources, as the server

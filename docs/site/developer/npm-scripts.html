@@ -119,6 +119,9 @@
           <a href="/docs/developer/adapters/cursor.html">Cursor</a>
         </li>
         <li>
+          <a href="/docs/developer/adapters/copilot-cli.html">Copilot CLI</a>
+        </li>
+        <li>
           <a href="/docs/developer/adapters/codex.html">Codex</a>
         </li>
         <li>
@@ -522,6 +525,26 @@ next <code>npm run docs</code> will overwrite you. Add a script, add its <code>s
 <td><code>npm run fitness:noise</code></td>
 <td><code>node bin/office-fitness.js --seeds=96 --minutes=3 --noise=6</code></td>
 <td>Measure the sampling error between disjoint seed sets of the same size. The smallest improvement worth believing.</td>
+</tr>
+<tr>
+<td><code>npm run connect:copilot</code></td>
+<td><code>node bin/aop-copilot-install.cjs</code></td>
+<td>Install the Copilot CLI hooks that feed the office.</td>
+</tr>
+<tr>
+<td><code>npm run connect:copilot:dry</code></td>
+<td><code>node bin/aop-copilot-install.cjs --dry-run</code></td>
+<td>Show what installing the Copilot CLI hooks would change, and change nothing.</td>
+</tr>
+<tr>
+<td><code>npm run connect:copilot:status</code></td>
+<td><code>node bin/aop-copilot-install.cjs --status</code></td>
+<td>Whether the Copilot CLI hooks are installed and whether the adapter is ready.</td>
+</tr>
+<tr>
+<td><code>npm run disconnect:copilot</code></td>
+<td><code>node bin/aop-copilot-install.cjs --uninstall</code></td>
+<td>Remove the Copilot CLI hooks.</td>
 </tr>
 <tr>
 <td><code>npm run pack:plugins</code></td>

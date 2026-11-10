@@ -48,9 +48,9 @@ const REQUEST_MS = 15000;
 // What a freshly minted office should be watching. A new scene defaults to Test Data,
 // which is right for someone who opened reception in a browser and wrong for an office
 // minted by this command: connecting a machine and then finding simulated agents in the
-// room is a half-finished job. Naming all five harnesses rather than guessing at one is
+// room is a half-finished job. Naming all six harnesses rather than guessing at one is
 // harmless — a source with nothing feeding it puts nobody in the building.
-const LIVE_SOURCES = ['rovo-cli', 'claude-code', 'cursor', 'codex-cli', 'openclaw'];
+const LIVE_SOURCES = ['rovo-cli', 'claude-code', 'cursor', 'copilot-cli', 'codex-cli', 'openclaw'];
 
 // --- helpers ---------------------------------------------------------------
 

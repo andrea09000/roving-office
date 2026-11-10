@@ -82,13 +82,13 @@ head and lets you watch the office from the floor.
 
 It opens on **simulated** agents, so a fresh checkout is busy with nothing installed. It
 runs on real ones too: there are adapters for **Rovo CLI**, **Claude Code** (terminal,
-desktop and SDK), **Cursor**, **Codex** and **OpenClaw**. Multiple agents, and multiple
+desktop and SDK), **Cursor**, **Copilot CLI**, **Codex** and **OpenClaw**. Multiple agents, and multiple
 harnesses, can share one office.
 
 ## Roadmap
 
 - **Done:** the [Agent Office Protocol](docs/developer/protocol/aop-spec.md) and its
-  receiver, plus adapters for all five harnesses above. OpenClaw is the first long-lived
+  receiver, plus adapters for all six harnesses above. OpenClaw is the first long-lived
   bridge, so it can heartbeat — and its agents keep
   [the names they gave themselves](docs/user/sources/openclaw-identity.md).
 - **Next:** richer bridge integrations. OpenClaw is in as a plugin rather than hooks, and a
