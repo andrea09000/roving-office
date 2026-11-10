@@ -11,13 +11,29 @@ import {
 } from '../src/host.js';
 
 test('reads the knobs it knows out of a query string', () => {
-  const knobs = knobsFromSearch('?chrome=minimal&frame=fill&zoom=1.8&season=winter');
+  const knobs = knobsFromSearch('?chrome=minimal&frame=fill&zoom=1.8&season=winter&building=tower');
   assert.deepEqual(knobs, {
     chrome: 'minimal',
     frame: 'fill',
     zoom: 1.8,
-    season: 'winter',
   });
+});
+
+test('season and building cannot be overridden through a URL or host message', () => {
+  assert.deepEqual(knobsFromSearch('?season=winter&building=tower'), {});
+  assert.deepEqual(knobsFromMessage({ season: 'winter', building: 'tower' }), {});
+
+  const calls = [];
+  applyKnobs(
+    { season: 'winter', building: 'tower', lights: 'on' },
+    {
+      chrome: () => {},
+      frame: () => {},
+      zoom: () => {},
+      look: (look) => calls.push(look),
+    },
+  );
+  assert.deepEqual(calls, [{ lights: 'on' }]);
 });
 
 test('an explicit zoom beats a frame mode that computes one', () => {
@@ -101,12 +117,10 @@ test('a standalone office takes no orders at all', () => {
   );
 });
 
-test('applies look as one call, not one per key', () => {
-  // Season and building each rebuild the scene, so two calls would rebuild it
-  // twice for a single message.
+test('applies the remaining look controls as one call', () => {
   const calls = [];
   applyKnobs(
-    { season: 'winter', building: 'simple', hour: 9 },
+    { lights: 'on', hour: 9 },
     {
       chrome: () => calls.push('chrome'),
       frame: () => calls.push('frame'),
@@ -114,7 +128,7 @@ test('applies look as one call, not one per key', () => {
       look: (look) => calls.push(['look', look]),
     },
   );
-  assert.deepEqual(calls, [['look', { season: 'winter', building: 'simple', hour: 9 }]]);
+  assert.deepEqual(calls, [['look', { lights: 'on', hour: 9 }]]);
 });
 
 test('touches only what was asked for', () => {

@@ -47,8 +47,6 @@ const KNOBS = {
     const n = Number(raw);
     return Number.isFinite(n) && n > 0 ? n : null;
   },
-  season: (raw) => (typeof raw === 'string' && raw ? raw : null),
-  building: (raw) => (typeof raw === 'string' && raw ? raw : null),
   lights: (raw) => (typeof raw === 'string' && raw ? raw : null),
   hour: (raw) => {
     const n = Number(raw);
@@ -133,10 +131,9 @@ export function applyKnobs(knobs, apply) {
   if (knobs.frame !== undefined) apply.frame(knobs.frame);
   if (knobs.zoom !== undefined) apply.zoom(knobs.zoom);
 
-  // Look is one call, because season and building both rebuild the scene and
-  // doing them separately would rebuild it twice for one message.
+  // Keep the remaining look controls in one call.
   const look = {};
-  for (const key of ['season', 'building', 'lights', 'hour']) {
+  for (const key of ['lights', 'hour']) {
     if (knobs[key] !== undefined) look[key] = knobs[key];
   }
   if (Object.keys(look).length) apply.look(look);

@@ -15,11 +15,11 @@ import { saveCameraView } from './scene/camera-view.js';
 import { applyTimeOfDay, dayLength, declinationFor, createReflectionEnvironment } from './scene/lighting.js';
 import { applyNightLights } from './scene/night-lights.js';
 import { buildWorld, changeAppearance, disposeWorld } from './world.js';
+import { applyAppearancePolicy, FIXED_APPEARANCE } from './appearance-policy.js';
 import { applyLayout, resetLayout, stationsOfKind } from './layout.js';
 import { createFpvRide } from './fpv.js';
 import { setTagLegibility, tagLegibilityFor } from './agents/Agent.js';
 import { CAMERA, ROOM } from './config.js';
-import { BUILDING_LIST, SEASON_LIST } from './projects.js';
 import {
   createFrameController,
   roomScreenBox,
@@ -132,10 +132,8 @@ const frameControl = createFrameController({ apply: (mode) => applyFrameMode(mod
 let world = null;
 
 /**
- * Season, building and sun overrides from the scene panel. They sit outside the
- * world because a world is rebuilt to apply them, so they cannot live in one.
- * Reset to the project's own defaults whenever the project changes — a project
- * defines its look, and carrying "winter" into a tower would be surprising.
+ * The scene's saved look and independent sun settings. The deployment appearance
+ * policy is applied whenever these values are used to build or change a world.
  *
  * `bearing` is the odd one out and rides along anyway: it needs no rebuild, so it
  * is written straight onto the live theme (see `applyBearing`). It is kept here so
@@ -214,7 +212,12 @@ function applySceneLayout(sceneId) {
 
 /** Build a complete world for a scene and start its feed (src/world.js). */
 function makeWorld(sceneId) {
-  return buildWorld(sceneId, { scene, overrides, lightsLevel, onFeedStatus });
+  return buildWorld(sceneId, {
+    scene,
+    overrides: applyAppearancePolicy(overrides),
+    lightsLevel,
+    onFeedStatus,
+  });
 }
 
 
@@ -230,7 +233,7 @@ function makeWorld(sceneId) {
  */
 function activateScene(sceneId, { keepOverrides = false } = {}) {
   const next = getScene(sceneId);
-  if (!keepOverrides && next?.look) overrides = { ...next.look };
+  if (!keepOverrides) overrides = applyAppearancePolicy(next?.look ?? {});
 
   // Teardown must come first: the material cache is shared by reference and
   // keyed on colour, so building the new world before releasing the old one
@@ -410,17 +413,15 @@ async function nameScene(id, name) {
 }
 
 /**
- * Redecorate the running office with a changed season or building, and keep it.
- *
- * The scene panel is how a scene's look gets chosen in practice, so the choice
- * is stored: an office is a set of rooms someone arranged, and a season that
- * reverted on reload would make the panel a toy. Authored scenes are exempt —
- * their look belongs to src/projects.js, and overwriting it would quietly redecorate
- * the demo office for everyone.
+ * Apply the remaining scene-panel or host changes while preserving the fixed look.
  */
 function applyOverrides(next) {
-  overrides = { ...overrides, ...next };
-  changeAppearance(world, { scene, overrides, lightsLevel });
+  overrides = applyAppearancePolicy({ ...overrides, ...next });
+  changeAppearance(world, {
+    scene,
+    overrides: applyAppearancePolicy(overrides),
+    lightsLevel,
+  });
   scenePanel?.setState({ ...lookState(), lights: lightsMode });
   updateWallClock();
   saveLook(world.project);
@@ -507,6 +508,7 @@ function describeDay(lat, sunTilt) {
  * room goes back to the authored arc rather than to the equator.
  */
 function applyPlace(lat, lon) {
+  if (lat !== FIXED_APPEARANCE.lat || lon !== FIXED_APPEARANCE.lon) return;
   const located = Number.isFinite(lat) && Number.isFinite(lon);
   // Crossing the equator turns the room to meet the sun.
   //
@@ -586,21 +588,15 @@ if (!office) throw new Error('no office to open');   // loadOffice() has redirec
  * add row and the source picker — are not disabled and left to be puzzled over. They
  * turn into the offer of an office that *is* yours.
  *
- * The demo's starting scenes cannot be renamed or deleted. Furniture and scenery
- * experiments stay in this browser; each visit starts with a fresh building and season.
+ * The demo's starting scenes cannot be renamed or deleted. Layouts stay local to the
+ * browser, and this deployment pins their appearance.
  */
 const reserved = Boolean(office.reserved);
 
 // The scene to open with: the one you were last in, else the office's first.
 const startId = initialSceneId();
 const startScene = getScene(startId);
-if (startScene?.look) overrides = { ...startScene.look };
-// Each demo visit gets its own look, without changing the shared starting rooms.
-// The world clock starts unshifted, so the sun and wall clock follow this browser's time.
-if (reserved) {
-  overrides.building = BUILDING_LIST[Math.floor(Math.random() * BUILDING_LIST.length)];
-  overrides.season = SEASON_LIST[Math.floor(Math.random() * SEASON_LIST.length)];
-}
+overrides = applyAppearancePolicy(startScene?.look ?? {});
 
 // Built against the first world, then re-pointed on each switch.
 applySceneLayout(startId);
@@ -627,9 +623,7 @@ const switcher = createSceneSwitcher({
   scenes: listScenes(),
   initialId: startId,
   onChange: (id) => {
-    // A scene brings its own season and building with it; an authored one goes
-    // back to its theme's defaults rather than inheriting the last scene's look.
-    overrides = { season: null, building: null, bearing: null, lat: null, lon: null };
+    overrides = applyAppearancePolicy({});
     activateScene(id);
   },
   // In the demo office the row is a way out rather than a way to add: see `reserved`.
@@ -808,6 +802,7 @@ northCompass = createNorthCompass({
 // a frame looks wrong. They were one panel for as long as there were few enough
 // controls not to notice they had different audiences.
 const scenePanel = createScenePanel({
+  lockAppearance: true,
   onSeason: (season) => applyOverrides({ season }),
   onBuilding: (building) => applyOverrides({ building }),
   onLights: (mode) => setLights(mode),
