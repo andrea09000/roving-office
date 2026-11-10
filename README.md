@@ -49,6 +49,9 @@ node server.cjs        # a private one, on the first free port from 8080
 Then open the printed URL. It lands you straight in the **demo office**, `TEST-0000` — `/`
 redirects there, so there is nothing to type to get in.
 
+This fork fixes every office to **Canopy House in autumn, in Rome, Italy**. The Scene panel
+and embed controls cannot change the building, season, or location.
+
 It will be empty for the first few seconds, and it says so: *"The office is ready."* Give
 it a moment. The default source invents its own agents, and they walk in through the door
 one at a time rather than appearing all at once — the first within about four seconds, then

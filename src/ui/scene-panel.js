@@ -69,8 +69,12 @@ function hhmm(hours) {
  * @param {() => boolean} [opts.getAutomaticLights] whether the clock is lighting the lamps
  * @param {(bearing: number) => void} opts.onBearing  degrees, 0–359
  * @param {(lat: ?number, lon: ?number) => void} opts.onPlace  nulls to clear it
+ * @param {boolean} [opts.lockAppearance] disable controls that change the place, season, or building
  */
-export function createScenePanel({ onSeason, onBuilding, onLights, getAutomaticLights = () => false, onBearing, onPlace }) {
+export function createScenePanel({
+  onSeason, onBuilding, onLights, getAutomaticLights = () => false, onBearing, onPlace,
+  lockAppearance = false,
+}) {
   const { host, body } = createStrip({ id: ID, title: 'Scene', onClose: () => hide() });
 
   let open = false;
@@ -195,6 +199,12 @@ export function createScenePanel({ onSeason, onBuilding, onLights, getAutomaticL
   const placeValue = node('span', 'dev-place-value');
 
   const placeMap = createPlaceMap({ width: 232, onPick: (lat, lon) => onPlace?.(lat, lon) });
+  if (lockAppearance) {
+    placeMap.el.inert = true;
+    placeMap.el.tabIndex = -1;
+    placeMap.el.style.pointerEvents = 'none';
+    placeMap.el.setAttribute('aria-disabled', 'true');
+  }
 
   // A named place is how you find a latitude without a coastline to recognise. It
   // reads "Somewhere" while the pin is off the list, rather than lying about which
@@ -232,6 +242,10 @@ export function createScenePanel({ onSeason, onBuilding, onLights, getAutomaticL
   // section is showing rather than adjusting anything in it, which is the one kind of
   // control that belongs beside a title instead of under it.
   locationGroup.heading.appendChild(placeSelect);
+  if (lockAppearance) {
+    placeSelect.disabled = true;
+    placeSelect.title = 'The location is fixed for this deployment';
+  }
 
   // One line under the map: a coordinate and the day it gets, which fits across 232
   // pixels now that nothing shares the line with it.
@@ -243,6 +257,12 @@ export function createScenePanel({ onSeason, onBuilding, onLights, getAutomaticL
   const seasonGroup = section('Season');
   seasonGroup.el.classList.add('dev-group-season');
   const seasonBtns = segmented(seasonGroup.body, SEASONS, (key) => onSeason?.(key));
+  if (lockAppearance) {
+    for (const button of seasonBtns.values()) {
+      button.disabled = true;
+      button.title = 'The appearance is fixed for this deployment';
+    }
+  }
   timeGroup.body.appendChild(seasonGroup.el);
 
   const buildingGroup = section('Building');
@@ -250,7 +270,12 @@ export function createScenePanel({ onSeason, onBuilding, onLights, getAutomaticL
   const buildingChoices = Object.fromEntries(BUILDING_ORDER.map(key => [key, BUILDINGS[key]]));
   const buildingBtns = segmented(buildingGroup.body, buildingChoices, (key) => onBuilding?.(key),
     { stacked: true });
-  for (const [key, button] of buildingBtns) button.title = BUILDINGS[key].subtitle;
+  for (const [key, button] of buildingBtns) {
+    button.title = lockAppearance
+      ? 'The appearance is fixed for this deployment'
+      : BUILDINGS[key].subtitle;
+    button.disabled = lockAppearance;
+  }
 
   // Ordered by how far each choice reaches. Building and Season replace the scenery
   // outright; Lights and Time change what is already standing; Orientation and the

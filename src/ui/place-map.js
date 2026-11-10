@@ -123,6 +123,7 @@ export const PLACES = [
   { name: 'Austin', lat: 30.27, lon: -97.74 },
   { name: 'New York', lat: 40.71, lon: -74.01 },
   { name: 'London', lat: 51.51, lon: -0.13 },
+  { name: 'Rome', lat: 41.9028, lon: 12.4964 },
   { name: 'Amsterdam', lat: 52.37, lon: 4.90 },
   { name: 'Gdańsk', lat: 54.35, lon: 18.65 },
   { name: 'Bengaluru', lat: 12.97, lon: 77.59 },
