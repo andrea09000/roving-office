@@ -16,6 +16,19 @@ Everything the plugin accepts — `url`, `token`, `scene`, `wrappedHarness`, `he
 `lingerMs`, `enabled` — is declared in `openclaw-plugin/openclaw.plugin.json`, and
 `openclaw plugins inspect roving-office` reads it back.
 
+## Optional Boss entry point
+
+`ROVING_OFFICE_BOSS_ENABLED=1` makes the office shell reveal its **Boss** link. The
+`GET /api/boss` response is only a visibility switch; it does not proxy, authenticate or
+authorize the Gateway. The deployment must separately route `/boss/` to the OpenClaw
+Control UI and retain Gateway authentication. Keep the Gateway bound to loopback and put
+only an authenticated private ingress in front of it; the office keycard is not Gateway
+authentication.
+
+This entry point is navigation, not a task queue. OpenClaw owns its sessions, agent
+delegation and execution policy; Roving Office remains an observer and receives only the
+events permitted by the adapter's redaction settings.
+
 ## Why the installer takes no `--url` and `--token`
 
 It would be one flow with two implementations: minting an office, spelling the ingest path,

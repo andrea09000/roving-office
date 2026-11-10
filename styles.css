@@ -46,6 +46,8 @@ html, body {
   cursor: pointer;
 }
 .help-button:hover { color: var(--brand); border-color: var(--brand); }
+.boss-link { display: flex; align-items: center; text-decoration: none; }
+.boss-link[hidden] { display: none; }
 
 /* A row that fires its binding looks like a row and behaves like a button: the list is
    the menu now, so the affordance has to read as one without turning the reference into

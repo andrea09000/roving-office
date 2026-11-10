@@ -162,6 +162,16 @@ payloads, the publisher's design and the WebSocket route are in
 <p>Everything the plugin accepts — <code>url</code>, <code>token</code>, <code>scene</code>, <code>wrappedHarness</code>, <code>heartbeatMs</code>,
 <code>lingerMs</code>, <code>enabled</code> — is declared in <code>openclaw-plugin/openclaw.plugin.json</code>, and
 <code>openclaw plugins inspect roving-office</code> reads it back.</p>
+<h2 id="optional-boss-entry-point" tabindex="-1">Optional Boss entry point</h2>
+<p><code>ROVING_OFFICE_BOSS_ENABLED=1</code> makes the office shell reveal its <strong>Boss</strong> link. The
+<code>GET /api/boss</code> response is only a visibility switch; it does not proxy, authenticate or
+authorize the Gateway. The deployment must separately route <code>/boss/</code> to the OpenClaw
+Control UI and retain Gateway authentication. Keep the Gateway bound to loopback and put
+only an authenticated private ingress in front of it; the office keycard is not Gateway
+authentication.</p>
+<p>This entry point is navigation, not a task queue. OpenClaw owns its sessions, agent
+delegation and execution policy; Roving Office remains an observer and receives only the
+events permitted by the adapter's redaction settings.</p>
 <h2 id="why-the-installer-takes-no---url-and---token" tabindex="-1">Why the installer takes no <code>--url</code> and <code>--token</code></h2>
 <p>It would be one flow with two implementations: minting an office, spelling the ingest path,
 and knowing that <code>enabled</code> and <code>allowConversationAccess</code> matter — done once in the
@@ -647,7 +657,8 @@ be serving it from its own origin.</p>
 
     <aside class="aside" aria-label="On this page">
       <h2>On this page</h2>
-      <nav class="toc"><ul><li><a href="#why-the-installer-takes-no---url-and---token">Why the installer takes no --url and --token</a></li>
+      <nav class="toc"><ul><li><a href="#optional-boss-entry-point">Optional Boss entry point</a></li>
+<li><a href="#why-the-installer-takes-no---url-and---token">Why the installer takes no --url and --token</a></li>
 <li><a href="#upgrading-a-server-install-keeps-its-office">Upgrading a server install keeps its office</a></li>
 <li><a href="#what-the-packer-does-and-the-one-thing-it-costs">What the packer does, and the one thing it costs</a></li>
 <li><a href="#installed-as-a-link-not-a-copy">Installed as a link, not a copy</a></li>

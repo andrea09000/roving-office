@@ -181,6 +181,17 @@ box that is already wired up, and minting there would move that Gateway into an 
 <strong>while the room people had bookmarked went quiet.</strong></p>
 <p>The <strong>scene</strong> is treated the same way: a room name somebody chose is not re-guessed from
 the hostname on an upgrade.</p>
+<h2 id="the-boss-when-the-operator-enables-it" tabindex="-1">The Boss, when the operator enables it</h2>
+<p>If the office header has a <strong>Boss</strong> link, it opens the OpenClaw Control UI. Open <strong>Agents</strong>
+to find the coordinator and specialists, then open the coordinator's chat to send work.
+Use <strong>Manage agents</strong> to configure the roster. To teach an agent persistently, edit its
+<code>AGENTS.md</code> in <strong>Settings → Agents → Files</strong>; those operating instructions load at the
+start of each session.</p>
+<p>Agents run with the permissions and workspace the server operator configured. Treat a
+sent task as work that has started, and review its changes before publishing or deploying
+them. Delegation is guided by the coordinator's instructions, not enforced by a separate
+job scheduler. The office remains the observer: it does not run tasks or grant agents
+permissions.</p>
 <h2 id="or-configure-it-by-hand" tabindex="-1">Or configure it by hand</h2>
 <p>The whole configuration, in <code>~/.openclaw/openclaw.json</code>:</p>
 <pre><code class="language-json">{
@@ -217,6 +228,7 @@ Installing the plugin writes its own config entry and would discard settings mad
       <nav class="toc"><ul><li><a href="#in-the-checkout">In the checkout</a></li>
 <li><a href="#on-the-server">On the server</a></li>
 <li><a href="#upgrading-later-is-the-same-command">Upgrading later is the same command</a></li>
+<li><a href="#the-boss-when-the-operator-enables-it">The Boss, when the operator enables it</a></li>
 <li><a href="#or-configure-it-by-hand">Or configure it by hand</a></li>
 <li><a href="#read-next">Read next</a></li></ul></nav>
     </aside>

@@ -24,6 +24,7 @@ before(async () => {
       ...process.env,
       ROVING_OFFICE_MINT_PER_CLIENT: '1000',
       ROVING_OFFICE_MINT_PER_SERVER: '1000',
+      ROVING_OFFICE_BOSS_ENABLED: '1',
     },
   });
   // Up when the health route answers; give a slow CI runner a few seconds.
@@ -55,6 +56,16 @@ test('the front door enters the demo and preserves office-entry links', async ()
   const entry = await fetch(`${BASE}/offices`);
   assert.equal(entry.status, 200);
   assert.match(await entry.text(), /id="enter-form"/);
+});
+
+test('the Boss link is enabled only by the server configuration', async () => {
+  const res = await fetch(`${BASE}/api/boss`);
+  assert.equal(res.status, 200);
+  assert.equal(res.headers.get('cache-control'), 'no-store');
+  assert.deepEqual(await res.json(), { enabled: true });
+
+  const office = await fetch(`${BASE}/office/TEST-0000/`);
+  assert.match(await office.text(), /id="boss-link"[^>]*href="\/boss\/"/);
 });
 
 test('demo API writes cannot change another visitor’s starting rooms', async () => {

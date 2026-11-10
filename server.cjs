@@ -593,6 +593,7 @@ const ADMIN_PASSWORD = (() => {
  * will choose a weaker password than they should.
  */
 const ADMIN_PATH = normaliseAdminPath(process.env.ROVING_OFFICE_ADMIN_PATH);
+const BOSS_ENABLED = process.env.ROVING_OFFICE_BOSS_ENABLED === '1';
 
 /**
  * The console's path as it will be matched, or null if it cannot be used.
@@ -1987,6 +1988,11 @@ const server = http.createServer(async (req, res) => {
 
   try {
     if (url.pathname === '/api/offices' && req.method === 'POST') return handleMint(req, res);
+
+    if (url.pathname === '/api/boss' && req.method === 'GET') {
+      res.setHeader('Cache-Control', 'no-store');
+      return json(res, 200, { enabled: BOSS_ENABLED });
+    }
 
     // The admin console, at whatever path the operator configured, matched before
     // anything else can claim it. When it is not configured `ADMIN_PATH` is null and this

@@ -60,6 +60,20 @@ box that is already wired up, and minting there would move that Gateway into an 
 The **scene** is treated the same way: a room name somebody chose is not re-guessed from
 the hostname on an upgrade.
 
+## The Boss, when the operator enables it
+
+If the office header has a **Boss** link, it opens the OpenClaw Control UI. Open **Agents**
+to find the coordinator and specialists, then open the coordinator's chat to send work.
+Use **Manage agents** to configure the roster. To teach an agent persistently, edit its
+`AGENTS.md` in **Settings → Agents → Files**; those operating instructions load at the
+start of each session.
+
+Agents run with the permissions and workspace the server operator configured. Treat a
+sent task as work that has started, and review its changes before publishing or deploying
+them. Delegation is guided by the coordinator's instructions, not enforced by a separate
+job scheduler. The office remains the observer: it does not run tasks or grant agents
+permissions.
+
 ## Or configure it by hand
 
 The whole configuration, in `~/.openclaw/openclaw.json`:
