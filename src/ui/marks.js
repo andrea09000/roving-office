@@ -222,6 +222,9 @@ export const codexMark = brandMark('166 166 384 384', `
 /** Cursor — a simple cursor chevron; the picker supplies Cursor violet. */
 export const cursorMark = mark('<path d="M7 5 L15 12 L7 19" /><circle cx="17.5" cy="12" r="1.5" fill="currentColor" stroke="none" />');
 
+/** Copilot CLI — an in-house loop glyph; the picker supplies its accent. */
+export const copilotMark = mark('<path d="M12 4.5c-3.1 0-5.7 2.2-5.7 5.1 0 1.3.6 2.5 1.6 3.4-1 .9-1.6 2.1-1.6 3.4 0 2.9 2.6 5.1 5.7 5.1" /><path d="M12 4.5c3.1 0 5.7 2.2 5.7 5.1 0 1.3-.6 2.5-1.6 3.4 1 .9 1.6 2.1 1.6 3.4 0 2.9-2.6 5.1-5.7 5.1" /><path d="M8 12.9h8" />');
+
 /**
  * OpenClaw — the project's own lobster mascot.
  *

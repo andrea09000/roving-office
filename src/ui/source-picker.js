@@ -34,7 +34,7 @@ import { sourceVisual } from './marks.js';
 /** What the note says when the office cannot be repointed at all. */
 const LOCKED_NOTE = 'This is the shared demo office, so its sources are fixed — '
   + 'Test Data invents its own traffic and needs nothing installed. To point a room '
-  + 'at Claude Code, Rovo CLI, Cursor, Codex or OpenClaw, you need an office of your own.';
+  + 'at Claude Code, Rovo CLI, Cursor, Copilot CLI, Codex or OpenClaw, you need an office of your own.';
 
 /** And what it says the rest of the time: sources, as many as you like. */
 const OPEN_NOTE = 'Your agents can share one room. Test Data brings simulated agents; '

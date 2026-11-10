@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Copilot CLI — The Roving Office</title>
+  <meta name="description" content="How the office is built, and how to change it." />
+
+  <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
+  <link rel="icon" type="image/png" href="/assets/icon-192.png" sizes="192x192" />
+  <link rel="preload" href="/docs/assets/Inter-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="/docs/assets/ui-theme.css" />
+  <link rel="stylesheet" href="/docs/assets/docs.css" />
+</head>
+<body>
+  <a class="skip" href="#doc">Skip to content</a>
+
+  <header class="topbar">
+    <a class="brand" href="/">
+      <img src="/assets/logo-64.png" alt="" width="26" height="26" />
+      <span>The Roving Office</span>
+    </a>
+    <nav class="tabs" aria-label="Documentation sets">
+      <a href="/docs/user/index.html">For everyone</a>
+      <a href="/docs/developer/index.html" aria-current="page">For developers</a>
+    </nav>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="sidebar">Contents</button>
+  </header>
+
+  <div class="shell">
+    <nav class="sidebar" id="sidebar" aria-label="developer documentation">
+      <h2>Start here</h2>
+      <ul>
+        <li>
+          <a href="/docs/developer/index.html">Where to look</a>
+        </li>
+        <li>
+          <a href="/docs/developer/getting-the-code.html">Getting the code</a>
+        </li>
+        <li>
+          <a href="/docs/developer/developing.html">Developing on it</a>
+        </li>
+        <li>
+          <a href="/docs/developer/npm-scripts.html">Every npm script</a>
+        </li>
+      </ul>
+      <h2>How it works</h2>
+      <ul>
+        <li>
+          <a href="/docs/developer/architecture.html">Architecture</a>
+        </li>
+        <li>
+          <a href="/docs/developer/physics.html">The physics of the office</a>
+        </li>
+        <li>
+          <a href="/docs/developer/scene-internals.html">Scene internals</a>
+        </li>
+        <li>
+          <a href="/docs/developer/job-delivery.html">Job delivery</a>
+        </li>
+        <li>
+          <a href="/docs/developer/editor.html">The furniture editor</a>
+        </li>
+        <li>
+          <a href="/docs/developer/layout-algorithm.html">The layout algorithm</a>
+        </li>
+        <li>
+          <a href="/docs/developer/tuning-the-layouts.html">Tuning the layout generator</a>
+        </li>
+        <li>
+          <a href="/docs/developer/sources.html">The source model</a>
+        </li>
+        <li>
+          <a href="/docs/developer/test-data.html">The Test Data source</a>
+        </li>
+      </ul>
+      <h2>Changing it</h2>
+      <ul>
+        <li>
+          <a href="/docs/developer/extending.html">Extending the office</a>
+        </li>
+        <li>
+          <a href="/docs/developer/prop-portraits.html">Photographing a prop</a>
+        </li>
+        <li>
+          <a href="/docs/developer/visual-assets.html">Visual assets and their rights</a>
+        </li>
+        <li>
+          <a href="/docs/developer/coplanar-probe.html">The coplanar-face probe</a>
+        </li>
+        <li>
+          <a href="/docs/developer/plugin-distribution.html">Publishing the plugins</a>
+        </li>
+        <li>
+          <a href="/docs/developer/admin-console.html">The admin console</a>
+        </li>
+      </ul>
+      <h2>The protocol</h2>
+      <ul>
+        <li>
+          <a href="/docs/developer/protocol/aop-spec.html">The AOP spec</a>
+        </li>
+        <li>
+          <a href="/docs/developer/protocol/aop-harness-adapters.html">Adapter notes</a>
+        </li>
+        <li>
+          <a href="/agent-setup/">What an agent is told to do <span class="ext" aria-label="standalone page">↗</span></a>
+        </li>
+      </ul>
+      <h2>Adapters</h2>
+      <ul>
+        <li>
+          <a href="/docs/developer/adapters/rovo-cli.html">Rovo CLI</a>
+        </li>
+        <li>
+          <a href="/docs/developer/adapters/claude-code.html">Claude Code</a>
+        </li>
+        <li>
+          <a href="/docs/developer/adapters/cursor.html">Cursor</a>
+        </li>
+        <li>
+          <a href="/docs/developer/adapters/copilot-cli.html" aria-current="page">Copilot CLI</a>
+        </li>
+        <li>
+          <a href="/docs/developer/adapters/codex.html">Codex</a>
+        </li>
+        <li>
+          <a href="/docs/developer/adapters/openclaw.html">OpenClaw</a>
+        </li>
+        <li>
+          <a href="/docs/developer/adapters/muse.html">Muse</a>
+        </li>
+      </ul>
+      <h2>Libraries</h2>
+      <ul>
+        <li>
+          <a href="/docs/character-movements.html">Every character movement <span class="ext" aria-label="standalone page">↗</span></a>
+        </li>
+        <li>
+          <a href="/docs/item-movements.html">Every object, turning <span class="ext" aria-label="standalone page">↗</span></a>
+        </li>
+        <li>
+          <a href="/docs/office-seeds.html">Two dozen generated offices <span class="ext" aria-label="standalone page">↗</span></a>
+        </li>
+        <li>
+          <a href="/docs/office-variety.html">Thirty offices, thirty seeds <span class="ext" aria-label="standalone page">↗</span></a>
+        </li>
+      </ul>
+    </nav>
+
+    <main id="doc" class="doc">
+      <h1 id="copilot-cli-adapter" tabindex="-1">Copilot CLI adapter</h1>
+<p><em>Installing it is <a href="../../user/sources/copilot-cli.html">Copilot CLI</a>. This is the mapping.</em></p>
+<p>The adapter uses Copilot CLI's user-level command hooks and the shared AOP sender. It
+returns no hook output, so it observes work without making permission or prompt decisions.</p>
+<h2 id="hook-aop" tabindex="-1">Hook → AOP</h2>
+<table>
+<thead>
+<tr>
+<th>Copilot CLI hook</th>
+<th>AOP event</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sessionStart</code> / <code>sessionEnd</code></td>
+<td><code>session.start</code> / <code>session.end</code></td>
+</tr>
+<tr>
+<td><code>userPromptSubmitted</code></td>
+<td><code>turn.start</code></td>
+</tr>
+<tr>
+<td><code>preToolUse</code> / <code>postToolUse</code> / <code>postToolUseFailure</code></td>
+<td><code>tool.start</code> / <code>tool.end</code></td>
+</tr>
+<tr>
+<td><code>agentStop</code></td>
+<td><code>turn.end</code></td>
+</tr>
+<tr>
+<td><code>subagentStop</code></td>
+<td>child <code>session.end</code></td>
+</tr>
+<tr>
+<td><code>preCompact</code></td>
+<td><code>context.compact</code></td>
+</tr>
+<tr>
+<td>non-recoverable <code>errorOccurred</code></td>
+<td>next <code>turn.end</code> has status <code>error</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>subagentStart</code> does not provide a child ID. A child session is introduced when one of its
+own hooks first arrives with <code>agentId</code>, and is linked to the root <code>sessionId</code>; its stop
+event closes it. This is an approximate parent link, not a spawning tool-call link.</p>
+<p>Copilot does not provide a tool-call ID in its hook payloads. The mapper matches a
+completion to the oldest active call with the same tool name. When identical tools run
+concurrently, the displayed duration may be approximate. The local state stores only the
+generated event ID, tool name, class and start time — never tool arguments or results.</p>
+<h2 id="redaction" tabindex="-1">Redaction</h2>
+<p>In <code>metadata</code> mode, prompts and tool-result text are not sent. Tool-result size is reduced
+locally to a byte count; tool targets pass through the shared redaction rules. <code>summary</code>
+and <code>full</code> follow the AOP redaction contract. See
+<a href="../protocol/aop-spec.html#10-privacy-and-redaction">spec §10</a>.</p>
+<h2 id="installation" tabindex="-1">Installation</h2>
+<p>The installer writes <code>~/.copilot/hooks/roving-office.json</code> (or
+<code>$COPILOT_HOME/hooks/roving-office.json</code>) using the documented version-1 hook format.
+It preserves other hook entries, backs up its config before updating it, writes the file
+with mode <code>0600</code>, and supports dry-run, status and uninstall.</p>
+<p>Copilot CLI runs hooks inside its local session sandbox when that sandbox is enabled.
+The adapter checkout and the local office endpoint must be accessible there; the hook
+does not expand sandbox permissions itself.</p>
+<h2 id="read-next" tabindex="-1">Read next</h2>
+<ul>
+<li><a href="../protocol/aop-harness-adapters.html">Adapter notes</a> — shared measurements</li>
+<li><a href="../protocol/aop-spec.html">The AOP spec</a> — the wire format</li>
+<li><a href="../extending.html#add-a-harness-adapter">Extending the office</a> — adding another one</li>
+</ul>
+
+    </main>
+
+    <aside class="aside" aria-label="On this page">
+      <h2>On this page</h2>
+      <nav class="toc"><ul><li><a href="#hook-aop">Hook → AOP</a></li>
+<li><a href="#redaction">Redaction</a></li>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#read-next">Read next</a></li></ul></nav>
+    </aside>
+  </div>
+
+  <footer class="footer">
+    <p>
+
+      Written for anyone with a checkout. If you just want to use the thing,
+      <a href="/docs/user/index.html">the user docs</a> are the other door.
+
+    </p>
+    <p class="wink">It's very alpha. It was written mostly on a plane.</p>
+  </footer>
+
+  <script src="/docs/assets/docs.js"></script>
+</body>
+</html>

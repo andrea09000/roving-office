@@ -30,7 +30,7 @@
 //   4. **The key table grows a category nobody decided.** `TARGET_KEYS` is checked
 //      bidirectionally against the cases below, so adding a key to the code without
 //      classifying it in a test is a failing build.
-//   5. **A sixth adapter quietly opts out.** `bin/mappers/*.cjs` is enumerated from
+//   5. **A fifth adapter quietly opts out.** `bin/mappers/*.cjs` is enumerated from
 //      disk, and a mapper with no fixture fails — the `gen-npm-scripts.mjs`
 //      bidirectional idiom, applied to adapters.
 //
@@ -352,6 +352,21 @@ const HOOK_ADAPTERS = {
       ['postToolUseFailure', { session_id: s, cwd: CWD, tool_name: 'Grep', tool_use_id: 'c2', tool_input: { pattern: SEKRIT.grep }, error: SEKRIT.error }],
       ['beforeShellExecution', { session_id: s, cwd: CWD, command: `gcloud auth print-access-token ${SEKRIT.commandArg}` }],
       ['stop', { session_id: s, cwd: CWD, summary: SEKRIT.summary }],
+    ],
+  },
+  'copilot-cli': {
+    module: '../bin/mappers/copilot-cli.cjs',
+    events: (s) => [
+      ['sessionStart', { sessionId: s, cwd: CWD, source: 'startup' }],
+      ['userPromptSubmitted', { sessionId: s, cwd: CWD, prompt: `${SEKRIT.prompt} — search the records` }],
+      ['preToolUse', { sessionId: s, cwd: CWD, toolName: 'view', toolArgs: { file_path: `${CWD}/${PATH_TARGET}` } }],
+      ['preToolUse', { sessionId: s, cwd: CWD, toolName: 'grep', toolArgs: { pattern: SEKRIT.grep } }],
+      ['preToolUse', { sessionId: s, cwd: CWD, toolName: 'web_search', toolArgs: { query: `${SEKRIT.query} merger docs` } }],
+      ['preToolUse', { sessionId: s, cwd: CWD, toolName: 'web_fetch', toolArgs: { url: URL_WITH_SECRET } }],
+      ['preToolUse', { sessionId: s, cwd: CWD, toolName: 'bash', toolArgs: { command: `gcloud auth print-access-token ${SEKRIT.commandArg}` } }],
+      ['postToolUseFailure', { sessionId: s, cwd: CWD, toolName: 'grep', toolArgs: { pattern: SEKRIT.grep }, error: SEKRIT.error }],
+      ['agentStop', { sessionId: s, cwd: CWD }],
+      ['sessionEnd', { sessionId: s, cwd: CWD, reason: 'complete' }],
     ],
   },
   'rovo-cli': {

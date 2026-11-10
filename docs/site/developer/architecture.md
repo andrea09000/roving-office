@@ -41,7 +41,7 @@ These rules hold that chain together.
 
 **There is exactly one reducer.** `server.cjs` holds a ring buffer and nothing else — it does not interpret events, and it does not know what a desk is. All translation from AOP into office behaviour is in `src/data/aop-reducer.js` — extracted from `AopSource`, which keeps the transport, precisely so the rules can be tested against recorded streams with fake clocks (`test/aop-reducer.test.js`) — so there is one place to look when the room disagrees with reality.
 
-**Every source is the same shape.** `src/data/AgentSource.js` is the interface; `MockSource` and `AopSource` both implement it, `sources.js` declares the six sources and how each is built, and nothing downstream can tell them apart. Optional capabilities are feature-detected rather than branched on by name — that is why **T** vanishes when nothing selected can invent a job, without the UI knowing what a mock is.
+**Every source is the same shape.** `src/data/AgentSource.js` is the interface; `MockSource` and `AopSource` both implement it, `sources.js` declares the eight sources and how each is built, and nothing downstream can tell them apart. Optional capabilities are feature-detected rather than branched on by name — that is why **T** vanishes when nothing selected can invent a job, without the UI knowing what a mock is.
 
 **An office is a set of sources, and `feeds.js` is where that stops mattering.** It starts one feed per selected source, prefixes every id with the feed it came from so two harnesses cannot collide on a session id, and collapses their separate connection states into the one line a pill can hold. Downstream of it there is a single stream of stage directions again, so nothing in the room has to reason about how many harnesses it is looking at — only an agent's own mark and detail panel ever name one.
 
@@ -335,7 +335,7 @@ src/
     feeds.js          # one office, several sources: fan-in, id namespacing,
                       #   one pill's worth of state for the whole set, and
                       #   sync() to change the set without rebuilding the room
-    sources.js        # the six sources, their marks and how each one is built
+    sources.js        # the eight sources, their marks and how each one is built
   projects.js         # authored scenes + themes (floors, palettes, light, outlook)
   office/
     office.js         # the office client: its scenes and sources, as the server

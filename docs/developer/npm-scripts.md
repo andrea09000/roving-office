@@ -117,6 +117,10 @@ Not yet filed under a heading above.
 | `npm run fitness:guard` | `node bin/office-fitness.js --seeds=96 --minutes=3 --guard` | Exit non-zero if any floored component has fallen — the check that stops a room being made quicker to walk about by making it less like an office. |
 | `npm run fitness:record` | `node bin/office-fitness.js --seeds=96 --minutes=3 --record` | Rewrite test/fitness-floors.json from the current generator. Raises the ratchet, so run it deliberately and say why. |
 | `npm run fitness:noise` | `node bin/office-fitness.js --seeds=96 --minutes=3 --noise=6` | Measure the sampling error between disjoint seed sets of the same size. The smallest improvement worth believing. |
+| `npm run connect:copilot` | `node bin/aop-copilot-install.cjs` | Install the Copilot CLI hooks that feed the office. |
+| `npm run connect:copilot:dry` | `node bin/aop-copilot-install.cjs --dry-run` | Show what installing the Copilot CLI hooks would change, and change nothing. |
+| `npm run connect:copilot:status` | `node bin/aop-copilot-install.cjs --status` | Whether the Copilot CLI hooks are installed and whether the adapter is ready. |
+| `npm run disconnect:copilot` | `node bin/aop-copilot-install.cjs --uninstall` | Remove the Copilot CLI hooks. |
 | `npm run pack:plugins` | `node bin/aop-plugin-pack.cjs --verify` | Build the Claude and Codex plugins as distribution artifacts, then install and fire a hook from a temp directory with no checkout above it. Writes the hosted marketplace the site serves; `pack:plugins:check` is what asserts you committed it. |
 | `npm run docs:markdown` | `node bin/gen-docs-markdown.mjs` | Publish a Markdown copy of every built page beside its HTML, so `/docs/user/install.md` serves prose rather than a page wrapped in a sidebar. The set comes from what Eleventy built, so an unpublished page is never copied. `npm run docs` does it for you. |
 | `npm run docs:llms` | `node bin/gen-llms-txt.mjs` | Rewrite docs/site/llms.txt — the [llms.txt](https://llmstxt.org/) index served at `/llms.txt`, generated from the docs sidebar and the first line of each page. `npm run docs` does it for you. |

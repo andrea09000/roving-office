@@ -53,6 +53,7 @@ You have the app and a browser.
 - [Rovo CLI](https://therovingoffice.com/docs/user/sources/rovo-cli.md): Atlassian's terminal agent.
 - [Claude Code](https://therovingoffice.com/docs/user/sources/claude-code.md): The richest feed there is: explicit turn boundaries and real subagents.
 - [Cursor](https://therovingoffice.com/docs/user/sources/cursor.md): An observer only: it watches Cursor Agent and never blocks or rewrites anything it does.
+- [Copilot CLI](https://therovingoffice.com/docs/user/sources/copilot-cli.md): An observer: it shows Copilot CLI work in the office without changing what the agent does.
 - [Codex](https://therovingoffice.com/docs/user/sources/codex.md): OpenAI's coding agent.
 - [OpenClaw](https://therovingoffice.com/docs/user/sources/openclaw.md): The odd one out, in the good way: a real plugin rather than a command per event.
 - [Muse](https://therovingoffice.com/docs/user/sources/muse.md): Meta's personal AI agent.
@@ -87,6 +88,7 @@ You have a checkout and something to change.
 - [Rovo CLI](https://therovingoffice.com/docs/developer/adapters/rovo-cli.md): Installing it is Rovo CLI.
 - [Claude Code](https://therovingoffice.com/docs/developer/adapters/claude-code.md): Installing it is Claude Code.
 - [Cursor](https://therovingoffice.com/docs/developer/adapters/cursor.md): Installing it is Cursor.
+- [Copilot CLI](https://therovingoffice.com/docs/developer/adapters/copilot-cli.md): Installing it is Copilot CLI.
 - [Codex](https://therovingoffice.com/docs/developer/adapters/codex.md): Installing it is Codex.
 - [OpenClaw](https://therovingoffice.com/docs/developer/adapters/openclaw.md): Installing it is OpenClaw; the identity fields are names, colours and faces.
 - [Muse](https://therovingoffice.com/docs/developer/adapters/muse.md): This is the emitter, not a mapper.

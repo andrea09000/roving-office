@@ -1,7 +1,7 @@
 // Where an office's agents come from.
 //
-// Six of these are live harness feeds arriving over the Agent Office Protocol
-// (docs/developer/protocol/aop-spec.md); the seventh invents its own traffic so the room can be
+// Seven of these are live harness feeds arriving over the Agent Office Protocol
+// (docs/developer/protocol/aop-spec.md); the eighth invents its own traffic so the room can be
 // watched, styled and debugged with nothing installed and nothing running.
 //
 // An office subscribes to as many of them as it likes and shows the results in
@@ -15,7 +15,7 @@ import { agentCapacity } from '../layout.js';
 import { MockSource } from './MockSource.js';
 import { AopSource } from './AopSource.js';
 import { officePath } from '../office/keycard.js';
-import { rovoMark, claudeMark, codexMark, cursorMark, openclawMark, museMark, testDataMark } from '../ui/marks.js';
+import { rovoMark, claudeMark, codexMark, cursorMark, copilotMark, openclawMark, museMark, testDataMark } from '../ui/marks.js';
 
 /**
  * @typedef {object} SourceDef
@@ -66,6 +66,16 @@ export const SOURCES = [
   {
     id: 'cursor', label: 'Cursor', blurb: 'Cursor agent hooks', accent: '#8f7cff', mark: cursorMark,
     kind: 'aop', harness: 'cursor', create: aopFactory('cursor'),
+  },
+  {
+    id: 'copilot-cli',
+    label: 'Copilot CLI',
+    blurb: 'GitHub Copilot CLI hooks',
+    accent: '#8957e5',
+    mark: copilotMark,
+    kind: 'aop',
+    harness: 'copilot-cli',
+    create: aopFactory('copilot-cli'),
   },
   {
     id: 'openclaw',

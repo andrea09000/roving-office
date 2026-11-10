@@ -230,7 +230,7 @@
         },
         {
           "path": "src/ui/marks.js",
-          "sha256": "41c1352da7a19f66b62a5067894252a550720f0ebede3435be750b2979ae25d0"
+          "sha256": "2076ad2febdeb5c8f2e67599bdb9d1f4760f5fd49c34af317aa838ade152dd35"
         }
       ],
       "licenseEvidence": []
@@ -255,7 +255,7 @@
       "files": [
         {
           "path": "src/ui/marks.js",
-          "sha256": "41c1352da7a19f66b62a5067894252a550720f0ebede3435be750b2979ae25d0"
+          "sha256": "2076ad2febdeb5c8f2e67599bdb9d1f4760f5fd49c34af317aa838ade152dd35"
         }
       ],
       "licenseEvidence": []
@@ -280,7 +280,7 @@
       "files": [
         {
           "path": "src/ui/marks.js",
-          "sha256": "41c1352da7a19f66b62a5067894252a550720f0ebede3435be750b2979ae25d0"
+          "sha256": "2076ad2febdeb5c8f2e67599bdb9d1f4760f5fd49c34af317aa838ade152dd35"
         }
       ],
       "licenseEvidence": []
@@ -407,7 +407,7 @@
       "files": [
         {
           "path": "src/ui/marks.js",
-          "sha256": "41c1352da7a19f66b62a5067894252a550720f0ebede3435be750b2979ae25d0"
+          "sha256": "2076ad2febdeb5c8f2e67599bdb9d1f4760f5fd49c34af317aa838ade152dd35"
         }
       ],
       "licenseEvidence": [
@@ -615,7 +615,7 @@
         },
         {
           "path": "docs/images/panels/source-picker.png",
-          "sha256": "20f21972c69b1cff2579acef2818a098d0b46a4bdaf4388df8755d98f0d13511"
+          "sha256": "ac8e0b9c611e13d2265d80be033e27f4984d78716562f4fb84e5086ea67858ea"
         },
         {
           "path": "favicon.ico",

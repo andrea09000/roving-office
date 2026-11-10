@@ -3,7 +3,7 @@ import { createAopReducer } from './aop-reducer.js';
 
 // A live feed from a real agentic harness, over the Agent Office Protocol.
 //
-// One class serves all five harnesses (Rovo CLI, Claude Code, Cursor, Codex, OpenClaw)
+// One class serves all six harnesses (Rovo CLI, Claude Code, Cursor, Copilot CLI, Codex, OpenClaw)
 // because AOP is harness-neutral by design: the adapter that runs inside the
 // harness has already done the translating, so all that differs here is which
 // `harness.name` we subscribe to. See docs/developer/protocol/aop-spec.md.

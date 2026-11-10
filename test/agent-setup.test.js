@@ -33,7 +33,7 @@ test('the prompt names every harness the project actually adapts', () => {
     .map((name) => /^connect:([a-z]+)$/.exec(name)?.[1])
     .filter((name) => name && name !== 'remote')
 
-  assert.ok(harnesses.length >= 5, `expected the five adapters, found ${harnesses.join(', ')}`)
+  assert.ok(harnesses.length >= 6, `expected the six adapters, found ${harnesses.join(', ')}`)
 
   const missing = harnesses.filter((harness) => !PROMPT.includes(`connect:${harness}`)
     // Claude Code installs from the published marketplace rather than a connect script,

@@ -2,7 +2,7 @@
 
 *Installing it is [Cursor](../../user/sources/cursor.md). This is the mapping.*
 
-The smallest of the five adapters, and an **observer only**: it does not write hook output
+The smallest of the six adapters, and an **observer only**: it does not write hook output
 and does not block any action.
 
 ## Hook → AOP
